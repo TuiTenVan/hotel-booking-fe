@@ -22,39 +22,39 @@ import { RequireAuth } from "./components/auth/RequireAuth.jsx";
 
 function App() {
   return (
-    <AuthProvider>
-      <main>
-        <NavBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/edit-room/:roomId" element={<EditRoom />} />
-          <Route path="/rooms" element={<ExistingRoom />} />
-          <Route path="/add-room" element={<AddRoom />} />
+      <AuthProvider>
+        <main>
+          <NavBar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/edit-room/:roomId" element={<EditRoom />} />
+            <Route path="/rooms" element={<ExistingRoom />} />
+            <Route path="/add-room" element={<AddRoom />} />
 
-          <Route
-							path="/book-room/:roomId"
-							element={
-								<RequireAuth>
-									<Checkout />
-								</RequireAuth>
-							}
-						/>
+            <Route
+                path="/book-room/:roomId"
+                element={
+                  <RequireAuth>
+                    <Checkout />
+                  </RequireAuth>
+                }
+            />
 
-          <Route path="/all-rooms" element={<RoomListing />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/booking-success" element={<BookingSuccess />} />
-          <Route path="/bookings" element={<Bookings />} />
-          <Route path="/find-booking" element={<FindBooking />} />
+            <Route path="/all-rooms" element={<RoomListing />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/booking-success" element={<BookingSuccess />} />
+            <Route path="/bookings" element={<Bookings />} />
+            <Route path="/find-booking" element={<FindBooking />} />
 
-          <Route path="/login" element={<SignIn />} />
-          <Route path="/register" element={<SignUp />} />
-          
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/logout" element={<FindBooking />} />
-        </Routes>
-        <Footer />
-      </main>
-    </AuthProvider>
+            <Route path="/login" element={<SignIn />} />
+            <Route path="/register" element={<SignUp />} />
+
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/logout" element={<FindBooking />} />
+          </Routes>
+          <Footer />
+        </main>
+      </AuthProvider>
   );
 }
 
