@@ -19,6 +19,11 @@ export const SignUp = () => {
 
     const handleSignUp = async (e) => {
         e.preventDefault()
+        if (register.password.length < 8) {
+            setErrorMessage("Password must be at least 8 characters long");
+            setSuccessMessage("");
+            return;
+        }
         try {
             const result = await signUp(register)
             setSuccessMessage(result)

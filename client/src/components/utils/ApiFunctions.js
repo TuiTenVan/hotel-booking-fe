@@ -4,11 +4,11 @@ export const api = axios.create({
     baseURL: "http://localhost:8088"
 })
 
-export const getHearder = () => {
+export const getHeader = () => {
     const token = localStorage.getItem("token")
+    console.log("Token:", token)
     return {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
     }
 }
 
@@ -19,12 +19,11 @@ export async function addNewRoom(image, roomType, roomPrice) {
     formData.append("roomType", roomType)
     formData.append("roomPrice", roomPrice)
 
-    const res = await api.post("/api/rooms/addNewRoom", formData)
-    if (res.status === 201 || res.status === 200) {
-        return true
-    } else {
-        return false
-    }
+    const res = await api.post("/api/rooms/addNewRoom", formData, {
+        headers: getHeader()
+    })
+
+    return res.status === 201 || res.status === 200
 }
 
 /** This function get rooms by type */
@@ -50,7 +49,9 @@ export async function getAllRooms() {
 /** This function delete room by id*/
 export async function deleteRoom(roomId) {
     try {
-        const result = await api.delete(`/api/rooms/delete/room/${roomId}`)
+        const result = await api.delete(`/api/rooms/delete/room/${roomId}`, {
+            headers: getHeader()
+        })
         return result.data
     } catch (error) {
         throw new Error(`Error deleting room ${error.message}`)
@@ -64,7 +65,9 @@ export async function updateRoom(roomId, roomData) {
     formData.append("roomPrice", roomData.roomPrice)
     formData.append("image", roomData.image)
 
-    const res = await api.put(`/api/rooms/update/${roomId}`, formData)
+    const res = await api.put(`/api/rooms/update/${roomId}`, formData, {
+        headers: getHeader()
+    })
     return res
 }
 
@@ -165,7 +168,7 @@ export async function signIn(login) {
 export async function getUserProfile(userId, token) {
     try {
         const response = await api.get(`/api/users/profile/${userId}`, {
-            headers: getHearder()
+            headers: getHeader()
         })
         return response.data
     } catch (error) {
@@ -176,7 +179,7 @@ export async function getUserProfile(userId, token) {
 export async function deleteUser(userId){
     try {
         const response = await api.delete(`/api/user/delete/${userId}`,{
-            headers: getHearder()
+            headers: getHeader()
         })
         return response.data
     } catch (error) {
@@ -187,7 +190,7 @@ export async function deleteUser(userId){
 export async function getUser(userId, token) {
     try {
         const response = await api.get(`/api/users/${userId}`, {
-            headers: getHearder()
+            headers: getHeader()
         })
         return response.data
     } catch (error) {
@@ -199,7 +202,7 @@ export async function getUser(userId, token) {
 export async function getBookingsByUserId(userId, token) {
 	try {
 		const response = await api.get(`/api/bookings/user/${userId}/bookings`, {
-			headers: getHearder()
+			headers: getHeader()
 		})
 		return response.data
 	} catch (error) {

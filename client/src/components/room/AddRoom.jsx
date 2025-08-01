@@ -1,104 +1,136 @@
-import React, { useState } from 'react'
-import { addNewRoom } from '../utils/ApiFunctions';
-import { RoomTypeSelector } from '../common/RoomTypeSelector';
-import { Link } from 'react-router-dom';
+import React, {useState} from 'react';
+import {Button, Card, Col, Form, InputNumber, message, Row, Select, Upload,} from 'antd';
+import {UploadOutlined} from '@ant-design/icons';
+import {addNewRoom} from '../utils/ApiFunctions';
+import {Link} from 'react-router-dom';
+
+// Component RoomTypeSelector sẽ được thay thế bằng AntD Select
+// và danh sách loại phòng sẽ được định nghĩa ở đây để minh hoạ
+const roomTypes = [
+    { value: 'SINGLE', label: 'Single Room' },
+    { value: 'DOUBLE', label: 'Double Room' },
+    { value: 'SUITE', label: 'Suite' },
+    { value: 'DELUXE', label: 'Deluxe' },
+];
 
 export const AddRoom = () => {
-    const [newRoom, setNewRoom] = useState({
-        image: null,
-        roomType: "",
-        roomPrice: ""
-    })
+    const [form] = Form.useForm();
+    const [imagePreview, setImagePreview] = useState('');
+    const [fileList, setFileList] = useState([]);
 
-    const [imagePreview, setImagePreview] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-
-    const handleRoomChange = (e) => {
-        const name = e.target.name
-        let value = e.target.value
-        if (name === "roomPrice") {
-            if (!isNaN(value)) {
-                value = parseInt(value);
-            } else {
-                value = "";
-            }
-        }
-
-        setNewRoom({ ...newRoom, [name]: value })
-    }
-
-    const hanleImageChange = (e) => {
-        const selectedImage = e.target.files[0]
-        setNewRoom({ ...newRoom, image: selectedImage })
-        setImagePreview(URL.createObjectURL(selectedImage))
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
+    const handleSubmit = async (values) => {
         try {
-            const success = await addNewRoom(newRoom.image, newRoom.roomType, newRoom.roomPrice)
+            const { roomType, roomPrice, image } = values;
+            const selectedImage = image?.[0]?.originFileObj;
+
+            if (!selectedImage) {
+                message.error('Please select an image.');
+                return;
+            }
+
+            const success = await addNewRoom(selectedImage, roomType, roomPrice);
             if (success !== undefined) {
-                setSuccessMessage("A new room was added")
-                setNewRoom({ image: null, roomType: "", roomPrice: "" })
-                setImagePreview("")
-                setErrorMessage("")
+                message.success('A new room was added successfully!');
+                form.resetFields();
+                setImagePreview('');
+                setFileList([]);
             } else {
-                setErrorMessage("Error adding room")
+                message.error('Error adding room. Please try again.');
             }
         } catch (error) {
-            setErrorMessage(error.message)
+            message.error(`Failed to add room: ${error.message}`);
         }
+    };
 
-        setTimeout(() => {
-            setSuccessMessage("")
-            setErrorMessage("")
-        }, 3000)
-    }
+    const handleImageChange = ({ fileList: newFileList }) => {
+        setFileList(newFileList);
+        if (newFileList.length > 0) {
+            const selectedImage = newFileList[0];
+            setImagePreview(URL.createObjectURL(selectedImage.originFileObj));
+        } else {
+            setImagePreview('');
+        }
+    };
 
     return (
-        <>
-            <div className='container mt-5 mb-5'>
-                <div className='row justify-content-center'>
-                    <div className='col-md-8 col-lg-6'>
-                        <h2 className='mt-5 mb-2'>Add a New Room</h2>
-                        {successMessage && (
-                            <div className='alert alert-success fade show'>{successMessage}</div>
+        <Row justify="center" style={{ marginTop: '50px', marginBottom: '50px' }}>
+            <Col xs={24} sm={20} md={16} lg={12}>
+                <Card title="Add a New Room">
+                    <Form
+                        form={form}
+                        layout="vertical"
+                        onFinish={handleSubmit}
+                        initialValues={{ roomPrice: 0 }}
+                    >
+                        <Form.Item
+                            name="roomType"
+                            label="Room Type"
+                            rules={[{ required: true, message: 'Please select a room type!' }]}
+                        >
+                            <Select
+                                placeholder="Select a room type"
+                                options={roomTypes}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="roomPrice"
+                            label="Room Price"
+                            rules={[{ required: true, message: 'Please input the room price!' }]}
+                        >
+                            <InputNumber
+                                style={{ width: '100%' }}
+                                formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="image"
+                            label="Image"
+                            valuePropName="fileList"
+                            getValueFromEvent={(e) => {
+                                if (Array.isArray(e)) {
+                                    return e;
+                                }
+                                return e && e.fileList;
+                            }}
+                            rules={[{ required: true, message: 'Please upload an image!' }]}
+                        >
+                            <Upload
+                                listType="picture"
+                                maxCount={1}
+                                beforeUpload={() => false} // Ngăn AntD tự động upload
+                                onChange={handleImageChange}
+                                fileList={fileList}
+                            >
+                                <Button icon={<UploadOutlined />}>Select File</Button>
+                            </Upload>
+                        </Form.Item>
+
+                        {imagePreview && (
+                            <Form.Item>
+                                <img
+                                    src={imagePreview}
+                                    alt="Room Preview"
+                                    style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain' }}
+                                />
+                            </Form.Item>
                         )}
 
-                        {errorMessage && (
-                            <div className='alert alert-danger fade show'>{errorMessage}</div>
-                        )}
-                        <form onSubmit={handleSubmit}>
-                            <div className='mb-3'>
-                                <label htmlFor='roomType' className='form-label'>Room Type</label>
-                                <div>
-                                    <RoomTypeSelector handleRoomInputChange={handleRoomChange} newRoom={newRoom} />
-                                </div>
-                            </div>
-                            <div className='mb-3'>
-                                <label htmlFor='roomPrice' className='form-label'>Room Price</label>
-                                <input className='form-control' required id='roomPrice' name='roomPrice'
-                                    value={newRoom.roomPrice} onChange={handleRoomChange} type='number' />
-                            </div>
-                            <div className='mb-3'>
-                                <label htmlFor='image' className='form-label'>Image</label>
-                                <input type="file" id='image' name='image' className='form-control'
-                                    onChange={hanleImageChange} />
-                                {imagePreview && (
-                                    <img src={imagePreview} style={{ maxWidth: '400px', maxHeight: '400px' }} className='mb-3' alt="Room Image" />
-                                )}
-                            </div>
-                            <div className='d-grid gap-2 d-md-flex mt-2'>
-                                <button type='submit' className='btn btn-outline-success'>
+                        <Form.Item>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                                <Button type="primary" htmlType="submit">
                                     Submit
-                                </button>
-                                <Link to={"/rooms"} className='btn btn-outline-danger ml-5'>Cancel</Link>
+                                </Button>
+                                <Link to={"/rooms"}>
+                                    <Button danger>Cancel</Button>
+                                </Link>
                             </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </>
-    )
-}
+                        </Form.Item>
+                    </Form>
+                </Card>
+            </Col>
+        </Row>
+    );
+};

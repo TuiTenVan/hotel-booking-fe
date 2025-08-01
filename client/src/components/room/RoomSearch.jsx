@@ -42,14 +42,19 @@ export const RoomSearch = () => {
     }
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target
-        setSearchQuery({ ...searchQuery, [name]: value })
-        const checkIn = moment(searchQuery.checkIn)
-        const checkOut = moment(searchQuery.checkOut)
-        if (checkIn.isValid() && checkOut.isValid()) {
-            setErrorMessage("")
+        const { name, value } = e.target;
+
+        const newQuery = { ...searchQuery, [name]: value };
+        const checkIn = moment(newQuery.checkIn);
+        const checkOut = moment(newQuery.checkOut);
+
+        if (checkIn.isValid() && checkOut.isValid() && checkOut.isSameOrAfter(checkIn)) {
+            setErrorMessage("");
         }
-    }
+
+        setSearchQuery(newQuery);
+    };
+
 
     const clearSearch = () => {
         setSearchQuery({
