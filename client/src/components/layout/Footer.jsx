@@ -8,7 +8,7 @@ export const Footer = () => {
             <Container>
                 <Row>
                     <Col xs={12} md={12} className='text-center'>
-                        <p className='mb-0'>All material herein &copy; {today.getFullYear()} Booking Hotel Pte. Ltd. and Booking Hotel Services Pte. Ltd. All Rights Reserved.</p>
+                        <p className='mb-0'>All Rights Reserved</p>
                     </Col>
                 </Row>
             </Container>

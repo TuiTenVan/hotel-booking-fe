@@ -20,11 +20,19 @@ export const SignIn = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         const success = await signIn(login)
+
         if (success) {
             const token = success.token
-            console.log('sucess', success);
+            const role = success.roles?.[0] || "" // nếu là mảng role
+            console.log('success', success)
+
             handleLogin(token)
-            navigate("/")
+            if (role === "ROLE_ADMIN") {
+                navigate("/admin")
+            } else {
+                navigate("/")
+            }
+
             window.location.reload()
         } else {
             setErrorMessage("Invalid username or password")
@@ -34,6 +42,7 @@ export const SignIn = () => {
             setErrorMessage("")
         }, 4000)
     }
+
 
     return (
         <section className='container col-6 mt-5 mb-5'>

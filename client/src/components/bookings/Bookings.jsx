@@ -35,17 +35,17 @@ export const Bookings = () => {
 	}
 
   return (
-    <section className='container' style={{backgroundColor: "whitesmoke"}}>
-        <HeaderPage title={"Manage Bookings"}/> <br />
-        {error && (<div className='text-danger'>{error}</div>)}
-        {isLoading ? (
-            <div className='text-danger'>Loading bookings...</div>
-        ): (
-            <BookingTable 
-            bookingInfo={bookingInfo} 
-            handleCancelBooking={handleBookingCancellation}/>
-        )}
-    </section>
+	  <section className='container' style={{backgroundColor: "whitesmoke", maxWidth: "100%", padding: "2rem"}}>
+		  <HeaderPage title={"Manage Bookings"}/> <br/>
+		  {error && (<div className='text-danger'>{error}</div>)}
+		  {isLoading ? (
+			  <div className='text-danger'>Loading bookings...</div>
+		  ) : (
+			  <BookingTable
+				  bookingInfo={bookingInfo}
+				  handleCancelBooking={handleBookingCancellation}/>
+		  )}
+	  </section>
 
   )
 }

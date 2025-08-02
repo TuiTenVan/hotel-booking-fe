@@ -19,6 +19,7 @@ import { SignUp } from "./components/auth/SignUp.jsx";
 import Profile from "./components/auth/Profile.jsx";
 import { AuthProvider } from "./components/auth/AuthProvider.jsx";
 import { RequireAuth } from "./components/auth/RequireAuth.jsx";
+import BookingHistory from "./components/bookings/BookingHistory";
 
 function App() {
   return (
@@ -44,7 +45,7 @@ function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/booking-success" element={<BookingSuccess />} />
             <Route path="/bookings" element={<Bookings />} />
-            <Route path="/find-booking" element={<FindBooking />} />
+            <Route path="/booking-history" element={<BookingHistory />} />
 
             <Route path="/login" element={<SignIn />} />
             <Route path="/register" element={<SignUp />} />

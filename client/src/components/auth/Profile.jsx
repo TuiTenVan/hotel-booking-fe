@@ -99,13 +99,6 @@ const Profile = () => {
 
                                     <div className="col-md-10">
                                         <div className="card-body">
-                                            <div className="form-group row">
-                                                <label className="col-md-2 col-form-label fw-bold">ID:</label>
-                                                <div className="col-md-10">
-                                                    <p className="card-text">{user.id}</p>
-                                                </div>
-                                            </div>
-                                            <hr />
 
                                             <div className="form-group row">
                                                 <label className="col-md-2 col-form-label fw-bold">First Name:</label>
@@ -129,63 +122,10 @@ const Profile = () => {
                                                     <p className="card-text">{user.email}</p>
                                                 </div>
                                             </div>
-                                            <hr />
-
-                                            <div className="form-group row">
-                                                <label className="col-md-2 col-form-label fw-bold">Roles:</label>
-                                                <div className="col-md-10">
-                                                    <ul className="list-unstyled">
-                                                        {user.roles.map((role) => (
-                                                            <li key={role.id} className="card-text">
-                                                                {role.name}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <h4 className="card-title text-center">Booking History</h4>
-
-                            {bookings.length > 0 ? (
-                                <table className="table table-bordered table-hover shadow">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Booking ID</th>
-                                            <th scope="col">Room ID</th>
-                                            <th scope="col">Room Type</th>
-                                            <th scope="col">Check In Date</th>
-                                            <th scope="col">Check Out Date</th>
-                                            <th scope="col">Confirmation Code</th>
-                                            <th scope="col">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {bookings.map((booking, index) => (
-                                            <tr key={index}>
-                                                <td>{booking.id}</td>
-                                                <td>{booking.room.id}</td>
-                                                <td>{booking.room.roomType}</td>
-                                                <td>
-                                                    {moment(booking.checkIn).subtract(1, "month").format("MMM Do, YYYY")}
-                                                </td>
-                                                <td>
-                                                    {moment(booking.checkOut)
-                                                        .subtract(1, "month")
-                                                        .format("MMM Do, YYYY")}
-                                                </td>
-                                                <td>{booking.bookingCode}</td>
-                                                <td className="text-success">On-going</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            ) : (
-                                <p>You have not made any bookings yet.</p>
-                            )}
 
                             <div className="d-flex justify-content-center">
                                 <div className="mx-2">
