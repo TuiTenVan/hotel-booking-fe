@@ -36,9 +36,14 @@ export const NavBar = () => {
                 <div className='collapse navbar-collapse' id='navbarScroll'>
                     <ul className='navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll'>
                         {isAdmin ? (
-                            <li className='nav-item'>
-                                <NavLink to={"/admin"} className='nav-link'>Admin</NavLink>
-                            </li>
+                            <>
+                                <li className='nav-item'>
+                                    <NavLink to={"/bookings"} className='nav-link'>Manage Bookings</NavLink>
+                                </li>
+                                <li className='nav-item'>
+                                    <NavLink to={"/rooms"} className='nav-link'>Manage Rooms</NavLink>
+                                </li>
+                            </>
                         ) : (
                             <li className='nav-item'>
                                 <NavLink to={"/all-rooms"} className='nav-link'>All Rooms</NavLink>

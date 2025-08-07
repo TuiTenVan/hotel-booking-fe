@@ -1,9 +1,9 @@
-import { parseISO } from "date-fns"
-import React, { useEffect, useState } from 'react'
+import {parseISO} from "date-fns"
+import React, {useEffect, useState} from 'react'
 import moment from 'moment'
-import { Table, Button, Tag } from "antd"
-import { DeleteOutlined } from "@ant-design/icons"
-import { DateSlider } from './DateSlider'
+import {Button, Table, Tag} from "antd"
+import {CloseCircleOutlined} from "@ant-design/icons"
+import {DateSlider} from './DateSlider'
 
 export const BookingTable = ({ bookingInfo, handleCancelBooking }) => {
     const [filteredBooking, setFilteredBooking] = useState(bookingInfo)
@@ -25,15 +25,46 @@ export const BookingTable = ({ bookingInfo, handleCancelBooking }) => {
     }
 
     useEffect(() => {
-        setFilteredBooking(bookingInfo)
+        const sorted = [...bookingInfo].sort((a, b) => {
+            const dateA = new Date(
+                a.createdAt[0], a.createdAt[1] - 1, a.createdAt[2],
+                a.createdAt[3], a.createdAt[4], a.createdAt[5]
+            )
+            const dateB = new Date(
+                b.createdAt[0], b.createdAt[1] - 1, b.createdAt[2],
+                b.createdAt[3], b.createdAt[4], b.createdAt[5]
+            )
+            return dateB - dateA // giảm dần (mới nhất trước)
+        })
+        setFilteredBooking(sorted)
     }, [bookingInfo])
 
+
     const columns = [
+        {
+            title: "No.",
+            align: "center",
+            key: "index",
+            render: (text, record, index) => index + 1
+        },
         {
             title: "Room Type",
             align: "center",
             dataIndex: ["room", "roomType"],
             key: "roomType",
+        },
+        {
+            title: "Created At",
+            align: "center",
+            dataIndex: "createdAt",
+            key: "createdAt",
+            render: (dateArr) => {
+                if (!Array.isArray(dateArr) || dateArr.length < 6) return "Invalid date"
+
+                const [year, month, day, hour, minute, second] = dateArr
+                const jsDate = new Date(year, month - 1, day, hour, minute, second)
+                return moment(jsDate).format("YYYY-MM-DD HH:mm:ss")
+            }
         },
         {
             title: "Check-In",
@@ -91,7 +122,7 @@ export const BookingTable = ({ bookingInfo, handleCancelBooking }) => {
             align: "center",
             key: "status",
             render: (status) => {
-                let color = "default"
+                let color = "magenta"
                 if (status === "CONFIRMED") color = "green"
                 else if (status === "PENDING") color = "orange"
                 else if (status === "FAILED") color = "red"
@@ -108,7 +139,7 @@ export const BookingTable = ({ bookingInfo, handleCancelBooking }) => {
                     danger
                     size="small"
                     shape="circle"
-                    icon={<DeleteOutlined />}
+                    icon={<CloseCircleOutlined  />}
                     onClick={() => handleCancelBooking(record.id)}
                 />
             ),
@@ -122,7 +153,7 @@ export const BookingTable = ({ bookingInfo, handleCancelBooking }) => {
                 columns={columns}
                 dataSource={filteredBooking}
                 rowKey="id"
-                pagination={{ pageSize: 5 }}
+                pagination={{ pageSize: 10 }}
                 locale={{ emptyText: "No Booking Found" }}
                 bordered
             />

@@ -24,8 +24,8 @@ export const BookingSuccess = () => {
                 </div>
             ) : (
                 <div>
-                    <h3 className='text-danger text-center'>Error Booking Room!</h3>
-                    <p className='text-danger text-center'>{error}</p>
+                    {/*<h3 className='text-danger text-center'>Error Booking Room!</h3>*/}
+                    {/*<p className='text-danger text-center'>{error}</p>*/}
                 </div>
             )}
         </div>

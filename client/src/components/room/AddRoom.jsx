@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {Button, Card, Col, Form, InputNumber, message, Row, Select, Upload,} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Button, Card, Col, Form, Input, InputNumber, message, Row, Select, Upload,} from 'antd';
 import {UploadOutlined} from '@ant-design/icons';
-import {addNewRoom} from '../utils/ApiFunctions';
+import {addNewRoom, getExtraService} from '../utils/ApiFunctions';
 import {Link} from 'react-router-dom';
 
 // Component RoomTypeSelector sẽ được thay thế bằng AntD Select
@@ -17,19 +17,62 @@ export const AddRoom = () => {
     const [form] = Form.useForm();
     const [imagePreview, setImagePreview] = useState('');
     const [fileList, setFileList] = useState([]);
+    const [serviceOptions, setServiceOptions] = useState([]);
+
+    const fetchServices = async () => {
+        try {
+            const services = await getExtraService();
+            // console.log("Fetched services:", services);
+            const options = services.map(service => ({
+                label: service.serviceName,
+                value: service.id,
+            }));
+            setServiceOptions(options);
+        } catch (error) {
+            message.error("Failed to load extra services");
+        }
+    };
+
+    useEffect(() => {
+        fetchServices();
+    }, []);
+
 
     const handleSubmit = async (values) => {
         try {
-            const { roomType, roomPrice, image } = values;
-            const selectedImage = image?.[0]?.originFileObj;
+            const {
+                roomType,
+                roomName,
+                description,
+                roomNumber,
+                capacity,
+                quantity,
+                services,
+                roomPrice,
+                image
+            } = values;
 
+            const selectedImage = image?.[0]?.originFileObj;
             if (!selectedImage) {
                 message.error('Please select an image.');
                 return;
             }
 
-            const success = await addNewRoom(selectedImage, roomType, roomPrice);
-            if (success !== undefined) {
+            const roomRequest = {
+                roomType,
+                roomName,
+                description,
+                roomNumber,
+                capacity,
+                quantity,
+                serviceIds: services,
+                roomPrice,
+                active: 1
+            };
+
+            const success = await addNewRoom(selectedImage, roomRequest);
+
+            if (success) {
                 message.success('A new room was added successfully!');
                 form.resetFields();
                 setImagePreview('');
@@ -41,6 +84,7 @@ export const AddRoom = () => {
             message.error(`Failed to add room: ${error.message}`);
         }
     };
+
 
     const handleImageChange = ({ fileList: newFileList }) => {
         setFileList(newFileList);
@@ -72,6 +116,44 @@ export const AddRoom = () => {
                                 options={roomTypes}
                             />
                         </Form.Item>
+
+                        <Form.Item
+                            name="description"
+                            label="Description"
+                            rules={[{ required: true, message: 'Please enter the room description!' }]}
+                        >
+                            <Input.TextArea rows={4} />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="capacity"
+                            label="Capacity"
+                            rules={[{ required: true, message: 'Please enter the room capacity!' }]}
+                        >
+                            <InputNumber style={{ width: '100%' }} min={1} />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="quantity"
+                            label="Quantity"
+                            rules={[{ required: true, message: 'Please enter the quantity!' }]}
+                        >
+                            <InputNumber style={{ width: '100%' }} min={1} />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="services"
+                            label="Services"
+                            rules={[{ required: true, message: 'Please select at least one service!' }]}
+                        >
+                            <Select
+                                mode="multiple"
+                                placeholder="Select services"
+                                options={serviceOptions}
+                                loading={serviceOptions.length === 0}
+                            />
+                        </Form.Item>
+
 
                         <Form.Item
                             name="roomPrice"

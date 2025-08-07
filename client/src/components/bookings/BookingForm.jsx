@@ -84,10 +84,12 @@ export const BookingForm = () => {
         try {
             const confirmCode = await bookRoom(roomId, booking)
             setIsSubmited(true)
+            console.log("Booking confirmed with code:", confirmCode)
             navigate("/booking-success", { state: { message: confirmCode } })
         } catch (error) {
             const errorMessage = error.message
             console.log(errorMessage)
+            console.log("Error booking room:", error)
             navigate("/booking-success", { state: { error: errorMessage } })
         }
     }

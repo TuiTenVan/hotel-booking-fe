@@ -32,6 +32,7 @@ const Profile = () => {
         const fetchUser = async () => {
             try {
                 const userData = await getUser(userId, token)
+                console.log("userData:", userData)
                 setUser(userData)
             } catch (error) {
                 console.error(error)

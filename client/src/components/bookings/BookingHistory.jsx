@@ -19,6 +19,14 @@ const BookingHistory = () => {
             setLoading(true)
             try {
                 const response = await getBookingsByUserId(userId, token)
+                console.log("Fetched bookings:", response)
+                const sortedBookings = response.sort((a, b) => {
+                    const dateA = new Date(...a.createdAt)
+                    const dateB = new Date(...b.createdAt)
+                    return dateB - dateA
+                })
+                setBookings(sortedBookings)
+
                 setBookings(response)
             } catch (error) {
                 console.error("Error fetching bookings:", error.message)
@@ -42,6 +50,19 @@ const BookingHistory = () => {
             align: "center",
             key: "index",
             render: (text, record, index) => index + 1
+        },
+        {
+            title: "Created At",
+            align: "center",
+            dataIndex: "createdAt",
+            key: "createdAt",
+            render: (dateArr) => {
+                if (!Array.isArray(dateArr) || dateArr.length < 6) return "Invalid date"
+
+                const [year, month, day, hour, minute, second] = dateArr
+                const jsDate = new Date(year, month - 1, day, hour, minute, second)
+                return moment(jsDate).format("YYYY-MM-DD HH:mm:ss")
+            }
         },
         {
             title: "Room Type",
@@ -87,7 +108,7 @@ const BookingHistory = () => {
                         color = "red"
                         break
                     default:
-                        color = "gray"
+                        color = "purple"
                 }
                 return <Tag color={color}>{status}</Tag>
             }

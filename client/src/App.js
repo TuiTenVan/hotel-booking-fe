@@ -13,13 +13,13 @@ import { Admin } from "./components/admin/Admin.jsx";
 import { Checkout } from "./components/bookings/Checkout.jsx";
 import { BookingSuccess } from "./components/bookings/BookingSuccess.jsx";
 import { Bookings } from "./components/bookings/Bookings.jsx";
-import { FindBooking } from "./components/bookings/FindBooking.jsx";
 import { SignIn } from "./components/auth/SignIn.jsx";
 import { SignUp } from "./components/auth/SignUp.jsx";
 import Profile from "./components/auth/Profile.jsx";
 import { AuthProvider } from "./components/auth/AuthProvider.jsx";
 import { RequireAuth } from "./components/auth/RequireAuth.jsx";
 import BookingHistory from "./components/bookings/BookingHistory";
+import BookingDetail from "./components/bookings/BookingDetail";
 
 function App() {
   return (
@@ -46,12 +46,12 @@ function App() {
             <Route path="/booking-success" element={<BookingSuccess />} />
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/booking-history" element={<BookingHistory />} />
+            <Route path="/booking/:id" element={<BookingDetail />} />
 
             <Route path="/login" element={<SignIn />} />
             <Route path="/register" element={<SignUp />} />
 
             <Route path="/profile" element={<Profile />} />
-            <Route path="/logout" element={<FindBooking />} />
           </Routes>
           <Footer />
         </main>

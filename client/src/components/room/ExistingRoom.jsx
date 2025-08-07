@@ -94,33 +94,40 @@ export const ExistingRoom = () => {
                         <div className='d-flex justify-content-center mb-3 mt-5'>
                             <table className='table table-bordered table-hover'>
                                 <thead>
-                                    <tr className='text-center'>
-                                        <th>ID</th>
-                                        <th>Room Type</th>
-                                        <th>Room Price</th>
-                                        <th>Image</th>
-                                        <th>Action</th>
-                                    </tr>
+                                <tr className='text-center'>
+                                    <th>ID</th>
+                                    <th>Room Type</th>
+                                    <th>Capacity</th>
+                                    <th>Quantity</th>
+                                    <th>Room Price</th>
+                                    <th>Image</th>
+                                    <th>Action</th>
+                                </tr>
                                 </thead>
+
                                 <tbody>
-                                    {currentRooms.map((room) => (
-                                        <tr key={room.id} className='text-center'>
-                                            <td>#{room.id}</td>
-                                            <td>{room.roomType}</td>
-                                            <td>${room.roomPrice}</td>
-                                            <td>
-                                            <img src={`data:image/*;base64, ${room.image}`} style={{maxWidth: '100px', maxHeight: '100px'}} className='mb-3' alt="Room Image" />
-                                            </td>
-                                            <td className='gap-2'>
-                                                <Link to={`/edit-room/${room.id}`}>
-                                                    <span className='btn btn-info btn-sm'><FaEdit /></span>
-                                                </Link>
-                                                &nbsp;
-                                                <button className='btn btn-danger btn-sm'
-                                                    onClick={() => handleDeleteRoom(room.id)}><FaTrashAlt /></button>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                {currentRooms.map((room) => (
+                                    <tr key={room.id} className='text-center'>
+                                        <td>#{room.id}</td>
+                                        <td>{room.roomType}</td>
+                                        <td>{room.capacity}</td>
+                                        <td>{room.quantity}</td>
+                                        <td>${room.roomPrice}</td>
+                                        <td>
+                                            <img src={`data:image/*;base64, ${room.image}`}
+                                                 style={{maxWidth: '100px', maxHeight: '100px'}} className='mb-3'
+                                                 alt="Room Image"/>
+                                        </td>
+                                        <td className='gap-2'>
+                                            <Link to={`/edit-room/${room.id}`}>
+                                                <span className='btn btn-info btn-sm'><FaEdit/></span>
+                                            </Link>
+                                            &nbsp;
+                                            <button className='btn btn-danger btn-sm'
+                                                    onClick={() => handleDeleteRoom(room.id)}><FaTrashAlt/></button>
+                                        </td>
+                                    </tr>
+                                ))}
                                 </tbody>
                             </table>
                         </div>

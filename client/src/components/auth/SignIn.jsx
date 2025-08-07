@@ -28,7 +28,7 @@ export const SignIn = () => {
 
             handleLogin(token)
             if (role === "ROLE_ADMIN") {
-                navigate("/admin")
+                navigate("/bookings")
             } else {
                 navigate("/")
             }
